@@ -13,7 +13,8 @@ const DocumentList = () => {
         const fetchDocuments = async () => {
             try {
                 // Fetch the list from the Express backend
-                const response = await axios.get('http://localhost:5000/api/pdfs');
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/pdfs`);
+
                 
                 // 🔑 CRITICAL DEBUG STEP: Log the incoming data structure!
                 // Inspect your browser console (F12) for this output.

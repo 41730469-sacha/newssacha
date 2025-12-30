@@ -38,7 +38,7 @@ const UserDashboard = () => {
         const fetchDocuments = async () => {
             try {
                 // Fetch documents from the protected API endpoint
-                const response = await axios.get('http://localhost:5000/api/pdfs'); 
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/pdfs`);
                 setDocuments(response.data);
             } catch (err) {
                 console.error("Error fetching protected document list:", err);
