@@ -21,12 +21,10 @@ const PDFViewPage = () => {
 
     const authToken = localStorage.getItem('token');
     const backendUrl = process.env.REACT_APP_API_URL || "http://localhost:5000"; // fallback for local dev
- const { filename } = useParams();
-const pdfSourceUrl = filename ? `${backendUrl}/pdfs/${filename}` : null;
-
-useEffect(() => {
-    if (!filename) navigate('/dashboard'); // redirect if no filename
-}, [filename, navigate]);
+const pdfSourceUrl = cleanFilename
+    ? `${backendUrl}/pdfs/${cleanFilename}`
+    : null;
+ 
 
     // Heading Logic (Analyze removed)
     const getResultHeading = () => {
