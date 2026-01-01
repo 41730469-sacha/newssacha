@@ -7,7 +7,7 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const { Language } = require('@google/genai');
 require('dotenv').config();
-
+const { Pool } = require('pg'); // make sure you require 'pg' at the top
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'A_VERY_STRONG_AND_RANDOM_SECRET_KEY';
@@ -49,29 +49,22 @@ if (fs.existsSync(frontendBuildPath)) {
 // });
 
 // ---------------- Database ----------------
-const { Pool } = require('pg'); // make sure you require 'pg' at the top
 
 const dbPool = new Pool({
-    host: process.env.DB_HOST,       // e.g., dpg-d5a3a43uibrs73bkgds0-a
-    port: process.env.DB_PORT || 5432, // Render Postgres default port
-    database: process.env.DB_NAME,   // e.g., news_db_sxcv
-    user: process.env.DB_USER,       // e.g., news_db_users
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    max: 10,                         // max connections
-    idleTimeoutMillis: 30000,        // close idle clients after 30s
-    connectionTimeoutMillis: 2000,   // return an error after 2s if connection fails
-});
 
-// Optional: test the connection
-dbPool.connect((err, client, release) => {
-    if (err) {
-        console.error('❌ Postgres Connection Failed:', err.message);
-    } else {
-        console.log('✅ Connected to Postgres Database');
-        release();
-    }
-});
+    ssl: {
+        rejectUnauthorized: false, // 🔥 REQUIRED ON RENDER
+    },
 
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+});
 
 // ---------------- JWT Middleware ----------------
 const authenticateToken = (req, res, next) => {
