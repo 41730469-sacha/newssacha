@@ -85,7 +85,7 @@ const HomePage = () => {
             <h1 style={{ marginBottom: '30px', color: '#2c3e50' }}>POLYNEWS - Global News PDFs</h1>
 
             {/* Search */}
-            <h2 style={{ marginBottom: '20px' , textAlign :'center'}}> PRESS ANY NEWS AND READ IT BY YOUR LANGUAGE  </h2>
+            <h2 style={{ marginBottom: '20px' , textAlign :'center'}}> PRESS ANY NEWS AND READ IT IN YOUR LANGUAGE  </h2>
             <input
                 type="text"
                 placeholder=" Search News..."
