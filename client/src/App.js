@@ -49,7 +49,7 @@ function App() {
                             <Route path="/dashboard" element={<DashboardPage />} />
                             
                             {/* Static PDF Route (can be removed if not needed) */}
-                            <Route path="/view-pdf-static" element={<PDFViewPage />} />
+                           // <Route path="/view-pdf-static" element={<PDFViewPage />} />
                             
                             {/* Dynamic PDF Viewer Route (Protected) */}
                             <Route path="/view-pdf/:filename" element={<PDFViewPage />} /> 

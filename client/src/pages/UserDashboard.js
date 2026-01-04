@@ -17,18 +17,17 @@ const UserDashboard = () => {
     const navigate = useNavigate();
 
     // Function to handle viewing the PDF
-    const handleViewPDF = (filename) => {
-        const finalFilename = (filename || '').trim();
+  const handleViewPDF = (filename) => {
+    const finalFilename = (filename || '').trim();
 
-        if (finalFilename) {
-            // Save the filename to Local Storage before navigating
-            localStorage.setItem('currentPdfFilename', finalFilename);
-            navigate('/view-pdf-static'); 
-        } else {
-            console.error("Attempted to open PDF with empty filename. Navigation blocked.");
-        }
-    };
-    
+    if (!finalFilename) {
+        console.error("Attempted to open PDF with empty filename.");
+        return;
+    }
+
+    navigate(`/view-pdf/${encodeURIComponent(finalFilename)}`);
+};
+
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login'); 
@@ -94,7 +93,7 @@ const UserDashboard = () => {
                     width: '100%',
                     maxWidth: '500px',
                     borderRadius: '8px',
-                    border: '2px solid rgb(64, 173, 73)',
+                    border: '2px solid rgba(0, 38, 255, 1)',
                     fontSize: '16px',
                 }}
             />
@@ -176,7 +175,7 @@ const UserDashboard = () => {
                                     padding: '20px',
                                     width: '280px', 
                                     borderRadius: '8px',
-                                    boxShadow: '0 2px 5px rgba(54, 136, 68, 0.71)', 
+                                    boxShadow: '0 2px 5px #9dcbfaff', 
                                     backgroundColor: '#fff',
                                     transition: 'transform 0.2s ease-in-out',
                                     cursor: 'pointer',

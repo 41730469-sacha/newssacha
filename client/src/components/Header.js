@@ -14,9 +14,10 @@ const Header = () => {
     
     // Define STATIC styles for a permanent solid header
     const headerStyle = {
-        backgroundColor: 'rgb(73, 165, 89)', 
+        backgroundColor: '#030f57ff', 
         color: 'white', 
-        boxShadow: '0 2px 4px rgba(146, 221, 102, 0.36)',
+        borderTop: '5px solid #ffffffff', 
+        boxShadow: '0 2px 4px rgba(255, 182, 255, 1)',
 
         // Fixed position properties
         position: 'fixed',
@@ -44,7 +45,7 @@ const Header = () => {
     };
     
     const buttonStyle = {
-        backgroundColor: '#34495e', 
+        backgroundColor: '#9dcbfaff', 
         color: 'white',
         border: '1px solid white',
         borderRadius: '5px',

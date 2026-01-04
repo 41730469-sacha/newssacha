@@ -10,7 +10,6 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // This ensures the request is sent via the proxy defined in client/package.json (http://localhost:5000).
     const BACKEND_API_URL = `${process.env.REACT_APP_API_URL}/api/pdfs`;
 
 
@@ -97,7 +96,7 @@ const HomePage = () => {
                     width: '100%',
                     maxWidth: '500px',
                     borderRadius: '8px',
-                    border: '2px solid rgb(64, 173, 73)',
+                    border: '2px solid rgba(0, 38, 255, 1)',
                     fontSize: '16px',
                 }}
             />
@@ -170,7 +169,7 @@ const HomePage = () => {
                                 padding: '20px',
                                 width: '280px',
                                 borderRadius: '8px',
-                                boxShadow: '0 2px 5px rgba(54, 136, 68, 0.71)',
+                                boxShadow: '0 2px 5px #9dcbfaff',
                                 backgroundColor: '#fff',
                                 transition: 'transform 0.2s ease-in-out',
                                 cursor: 'pointer',

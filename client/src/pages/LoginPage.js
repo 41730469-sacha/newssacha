@@ -42,7 +42,7 @@ export default function LoginPage() {
         setMessage('Logging in...');
         try {
             // FINAL FIX: Correct endpoint to /api/auth/login
-            const response = await axios.post(`${API_URL}/auth/login`, formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, formData);
             
             const token = response.data.token;
             const user = response.data.user; 

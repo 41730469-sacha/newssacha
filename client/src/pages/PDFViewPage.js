@@ -3,10 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { fetchPdfTranslation, fetchSummary, fetchRead } from '../components/all.js';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
+//pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = 
+  `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const PDFViewPage = () => {
-    const cleanFilename = localStorage.getItem('currentPdfFilename') || '';
+    const { filename } = useParams();
+const cleanFilename = filename || '';
+
     const navigate = useNavigate();
 
     const [numPages, setNumPages] = useState(null);
@@ -138,7 +142,10 @@ const pdfSourceUrl = cleanFilename
             if (!ttsFile) throw new Error('Server returned no audio file URL.');
 
             // Check if the output URL is a full path or a relative path
-            const fullAudioUrl = ttsFile.startsWith('http') ? ttsFile : `http://localhost:5000/${ttsFile}`;
+           const fullAudioUrl = ttsFile.startsWith('http')
+  ? ttsFile
+  : `http://localhost:5000/${ttsFile}`;
+
 
             // Set the result to include an audio player
             setResult(`🗣️ **Audio Ready!**\n\n[Audio Player for ${filenameToSend} - ${voice}]\n\n<audio controls src="${fullAudioUrl}">Your browser does not support the audio element.</audio>`);

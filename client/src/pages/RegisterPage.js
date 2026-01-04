@@ -212,7 +212,7 @@ const RegisterPage = () => {
                 dateOfBirth: `${formData.birthYear}-${formData.birthMonth.padStart(2, '0')}-${formData.birthDay.padStart(2, '0')}`
             };
             
-            const response = await axios.post(`${API_BASE_URL}/auth/register`, submissionData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, submissionData);
             setMessage('Registration successful! Redirecting to login...');
             
             // Redirect to login after successful registration
