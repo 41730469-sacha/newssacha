@@ -1,27 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-//const mysql = require('mysql2');
+const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const { Language } = require('@google/genai');
 require('dotenv').config();
-const { Pool } = require('pg'); // make sure you require 'pg' at the top
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'A_VERY_STRONG_AND_RANDOM_SECRET_KEY';
-const ttsRoutes = require("./routes/tts");
-
-app.use(express.json());
-app.use("/tts", express.static(path.join(__dirname, "tts")));
-app.use("/api", ttsRoutes);
 
 // ---------------- Middleware ----------------
-//app.use(cors());
 app.use(cors({
   origin: [
-    "https://regal-klepon-7f98fb.netlify.app",
+    "https://chimerical-brioche-b4f82a.netlify.app",
     "http://localhost:3000"
   ],
   credentials: true
@@ -30,40 +24,25 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve React frontend (only if testing full-stack locally)
-const frontendBuildPath = path.join(__dirname, 'client', 'build');
-if (fs.existsSync(frontendBuildPath)) {
-    app.use(express.static(frontendBuildPath));
-    app.all(/^\/.*/, (req, res) => {
-        res.sendFile(path.join(frontendBuildPath, 'index.html'));
-    });
-}
-
-
-
 // ---------------- Database ----------------
-// ---------------- Database (PostgreSQL) ----------------
-const dbPool = new Pool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    ssl: { rejectUnauthorized: false }, // required on Render
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+const dbPool = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'sacha123',
+    database: process.env.DB_NAME || 'pdf_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-dbPool.connect()
-  .then(client => {
-    console.log("✅ Connected to PostgreSQL");
-    client.release();
-  })
-  .catch(err => {
-    console.error("❌ DB Connection Error:", err.message);
-    process.exit(1);
-  });
+dbPool.getConnection((err, connection) => {
+    if (err) {
+        console.error('❌ MySQL Connection Failed:', err.message);
+        process.exit(1);
+    }
+    console.log('✅ Connected to MySQL Database');
+    connection.release();
+});
 
 // ---------------- JWT Middleware ----------------
 const authenticateToken = (req, res, next) => {
@@ -78,12 +57,24 @@ const authenticateToken = (req, res, next) => {
 };
 
 // ---------------- Routes ----------------
-const authRoutes = require('./routes/auth')(dbPool, JWT_SECRET);
-const aiRoutes = require('./routes/ai');
+let authRoutes, aiRoutes;
+
+try {
+    authRoutes = require('./routes/auth')(dbPool, JWT_SECRET);
+} catch (err) {
+    console.error("❌ Could not load auth routes:", err.message);
+    authRoutes = express.Router();
+}
+
+try {
+    aiRoutes = require('./routes/ai');
+} catch (err) {
+    console.error("❌ Could not load AI routes:", err.message);
+    aiRoutes = express.Router();
+}
 
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", authenticateToken, aiRoutes);
-
 
 // ---------------- Public PDFs ----------------
 const publicPdfsPath = path.join(__dirname, "public_pdfs");
@@ -101,7 +92,7 @@ app.get("/api/pdfs", (req, res) => {
         { id: 2, title: "Haaretz ", filename: "Haaretz.pdf",language: "english" , date: "2025-12-10", country: "israel" },
         { id: 3, title: " el mundo", filename: "el mundo.pdf", language: "spanish" , date: "2025-12-26", country: "Spain" },
         { id: 4, title: " le parisien", filename: "le parisien.pdf", language: "french" , date: "2025-12-09", country: "France" },
-        { id: 5, title: "جريدة الاخبار", filename: "الاخبار.pdf", language: "arabic" , date: "2025-10-06", country: "Lebanon" }
+        { id: 4, title: "جريدة الاخبار", filename: "الاخبار.pdf", language: "arabic" , date: "2025-10-06", country: "Lebanon" }
     ]);
 });
 // ---------------- Test ----------------
